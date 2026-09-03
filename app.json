@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "bluetank",
-    "slug": "bluetank",
+    "slug": "tcc",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -17,7 +17,8 @@
         "backgroundImage": "./assets/images/android-icon-background.png",
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.oluiz.tcc"
     },
     "web": {
       "output": "static",
@@ -37,6 +38,13 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "269a88c7-b0ca-4d98-8c94-0b108b9d3645"
+      }
+    },
+    "owner": "oluiz"
   }
 }
