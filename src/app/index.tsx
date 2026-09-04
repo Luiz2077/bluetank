@@ -1,98 +1,159 @@
-import * as Device from 'expo-device';
-import { Platform, StyleSheet } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { Link } from "expo-router";
+import { Pressable, StyleSheet, Text, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { AnimatedIcon } from '@/components/animated-icon';
-import { HintRow } from '@/components/hint-row';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { WebBadge } from '@/components/web-badge';
-import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
+export default function WelcomeScreen() {
+  const insets = useSafeAreaInsets();
 
-function getDevMenuHint() {
-  if (Platform.OS === 'web') {
-    return <ThemedText type="small">use browser devtools</ThemedText>;
-  }
-  if (Device.isDevice) {
-    return (
-      <ThemedText type="small">
-        shake device or press <ThemedText type="code">m</ThemedText> in terminal
-      </ThemedText>
-    );
-  }
-  const shortcut = Platform.OS === 'android' ? 'cmd+m (or ctrl+m)' : 'cmd+d';
   return (
-    <ThemedText type="small">
-      press <ThemedText type="code">{shortcut}</ThemedText>
-    </ThemedText>
-  );
-}
+    <View style={styles.screen}>
+      <View
+        style={[
+          styles.hero,
+          {
+            paddingTop: insets.top + 32,
+          },
+        ]}
+      >
+        <View style={styles.brandSymbol}>
+          <Text style={styles.brandInitials}>BT</Text>
+        </View>
 
-export default function HomeScreen() {
-  return (
-    <ThemedView style={styles.container}>
-      <SafeAreaView style={styles.safeArea}>
-        <ThemedView style={styles.heroSection}>
-          <AnimatedIcon />
-          <ThemedText type="title" style={styles.title}>
-            Welcome to&nbsp;Expo
-          </ThemedText>
-        </ThemedView>
+        <Text style={styles.brandName}>BlueTank</Text>
+        <Text style={styles.brandCaption}>Piscicultura inteligente</Text>
+      </View>
 
-        <ThemedText type="code" style={styles.code}>
-          get started
-        </ThemedText>
+      <View
+        style={[
+          styles.panel,
+          {
+            paddingBottom: Math.max(insets.bottom, 24),
+          },
+        ]}
+      >
+        <Text style={styles.title}>Bem-vindo ao BlueTank</Text>
 
-        <ThemedView type="backgroundElement" style={styles.stepContainer}>
-          <HintRow
-            title="Try editing"
-            hint={<ThemedText type="code">src/app/index.tsx</ThemedText>}
-          />
-          <HintRow title="Dev tools" hint={getDevMenuHint()} />
-          <HintRow
-            title="Fresh start"
-            hint={<ThemedText type="code">npm run reset-project</ThemedText>}
-          />
-        </ThemedView>
+        <Text style={styles.description}>
+          Controle e monitore seus tanques de onde estiver.
+        </Text>
 
-        {Platform.OS === 'web' && <WebBadge />}
-      </SafeAreaView>
-    </ThemedView>
+        <View style={styles.actions}>
+          <Link href='/(auth)/sign-in' asChild>
+            <Pressable
+              accessibilityRole='button'
+              style={({ pressed }) => [
+                styles.primaryButton,
+                pressed && styles.buttonPressed,
+              ]}
+            >
+              <Text style={styles.primaryButtonText}>Entrar</Text>
+            </Pressable>
+          </Link>
+
+          <Link href='/(auth)/sign-up' asChild>
+            <Pressable
+              accessibilityRole='button'
+              style={({ pressed }) => [
+                styles.secondaryButton,
+                pressed && styles.buttonPressed,
+              ]}
+            >
+              <Text style={styles.secondaryButtonText}>Criar conta</Text>
+            </Pressable>
+          </Link>
+        </View>
+      </View>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  screen: {
     flex: 1,
-    justifyContent: 'center',
-    flexDirection: 'row',
+    backgroundColor: "#1689D8",
   },
-  safeArea: {
+  hero: {
     flex: 1,
-    paddingHorizontal: Spacing.four,
-    alignItems: 'center',
-    gap: Spacing.three,
-    paddingBottom: BottomTabInset + Spacing.three,
-    maxWidth: MaxContentWidth,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 24,
   },
-  heroSection: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    gap: Spacing.four,
+  brandSymbol: {
+    width: 72,
+    height: 72,
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 16,
+    borderRadius: 36,
+    backgroundColor: "rgba(255, 255, 255, 0.18)",
+  },
+  brandInitials: {
+    color: "#FFFFFF",
+    fontSize: 24,
+    fontWeight: "700",
+  },
+  brandName: {
+    color: "#FFFFFF",
+    fontSize: 28,
+    fontWeight: "700",
+  },
+  brandCaption: {
+    marginTop: 6,
+    color: "rgba(255, 255, 255, 0.8)",
+    fontSize: 14,
+  },
+  panel: {
+    minHeight: 340,
+    paddingTop: 42,
+    paddingHorizontal: 28,
+    borderTopLeftRadius: 36,
+    borderTopRightRadius: 36,
+    backgroundColor: "#FFFFFF",
   },
   title: {
-    textAlign: 'center',
+    color: "#102A43",
+    fontSize: 28,
+    fontWeight: "700",
+    textAlign: "center",
   },
-  code: {
-    textTransform: 'uppercase',
+  description: {
+    marginTop: 12,
+    color: "#627D98",
+    fontSize: 16,
+    lineHeight: 24,
+    textAlign: "center",
   },
-  stepContainer: {
-    gap: Spacing.three,
-    alignSelf: 'stretch',
-    paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.four,
-    borderRadius: Spacing.four,
+  actions: {
+    marginTop: 36,
+    gap: 14,
+  },
+  primaryButton: {
+    height: 54,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 16,
+    backgroundColor: "#1689D8",
+  },
+  primaryButtonText: {
+    color: "#FFFFFF",
+    fontSize: 16,
+    fontWeight: "700",
+  },
+  secondaryButton: {
+    height: 54,
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 1.5,
+    borderColor: "#1689D8",
+    borderRadius: 16,
+    backgroundColor: "#FFFFFF",
+  },
+  secondaryButtonText: {
+    color: "#1689D8",
+    fontSize: 16,
+    fontWeight: "700",
+  },
+  buttonPressed: {
+    opacity: 0.75,
   },
 });
