@@ -1,158 +1,133 @@
+import welcomeImage from "@/assets/images/welcome1.jpg";
 import { Link } from "expo-router";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import {
+  ImageBackground,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function WelcomeScreen() {
   const insets = useSafeAreaInsets();
 
   return (
-    <View style={styles.screen}>
-      <View
-        style={[
-          styles.hero,
-          {
-            paddingTop: insets.top + 32,
-          },
-        ]}
-      >
-        <View style={styles.brandSymbol}>
-          <Text style={styles.brandInitials}>BT</Text>
+    <ImageBackground
+      source={welcomeImage}
+      style={styles.screen}
+      imageStyle={styles.backgroundImage}
+      resizeMode='cover'
+    >
+      <View style={styles.overlay} pointerEvents='none' />
+
+      <View style={styles.content}>
+        <View
+          style={[
+            styles.hero,
+            {
+              paddingTop: insets.top + 62,
+            },
+          ]}
+        >
+          <Text style={styles.brandName}>BlueTank</Text>
+
+          <Text style={styles.brandCaption}>
+            Controle e monitore seus tanques de onde estiver.
+          </Text>
         </View>
-
-        <Text style={styles.brandName}>BlueTank</Text>
-        <Text style={styles.brandCaption}>Piscicultura inteligente</Text>
-      </View>
-
-      <View
-        style={[
-          styles.panel,
-          {
-            paddingBottom: Math.max(insets.bottom, 24),
-          },
-        ]}
-      >
-        <Text style={styles.title}>Bem-vindo ao BlueTank</Text>
-
-        <Text style={styles.description}>
-          Controle e monitore seus tanques de onde estiver.
-        </Text>
 
         <View style={styles.actions}>
-          <Link href='/(auth)/sign-in' asChild>
-            <Pressable
+          <Link href='/sign-in' asChild>
+            <TouchableOpacity
               accessibilityRole='button'
-              style={({ pressed }) => [
-                styles.primaryButton,
-                pressed && styles.buttonPressed,
-              ]}
+              style={styles.buttonStyle}
             >
-              <Text style={styles.primaryButtonText}>Entrar</Text>
-            </Pressable>
+              <Text style={styles.buttonText}>Entrar</Text>
+            </TouchableOpacity>
           </Link>
 
-          <Link href='/(auth)/sign-up' asChild>
-            <Pressable
+          <Link href='/sign-up' asChild>
+            <TouchableOpacity
               accessibilityRole='button'
-              style={({ pressed }) => [
-                styles.secondaryButton,
-                pressed && styles.buttonPressed,
-              ]}
+              style={styles.buttonStyle}
             >
-              <Text style={styles.secondaryButtonText}>Criar conta</Text>
-            </Pressable>
+              <Text style={styles.buttonText}>Criar conta</Text>
+            </TouchableOpacity>
           </Link>
         </View>
       </View>
-    </View>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    backgroundColor: "#1689D8",
+    backgroundColor: "#0B5E91",
   },
-  hero: {
+
+  backgroundImage: {
+    width: "100%",
+    height: "100%",
+  },
+
+  overlay: {
+    ...StyleSheet.absoluteFill,
+    backgroundColor: "rgba(8, 48, 76, 0.18)",
+  },
+
+  content: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "space-between",
+  },
+
+  hero: {
+    alignItems: "flex-start",
     paddingHorizontal: 24,
+    backgroundColor: "transparent",
   },
-  brandSymbol: {
-    width: 72,
-    height: 72,
-    alignItems: "center",
-    justifyContent: "center",
-    marginBottom: 16,
-    borderRadius: 36,
-    backgroundColor: "rgba(255, 255, 255, 0.18)",
-  },
-  brandInitials: {
-    color: "#FFFFFF",
-    fontSize: 24,
-    fontWeight: "700",
-  },
+
   brandName: {
-    color: "#FFFFFF",
-    fontSize: 28,
+    color: "white",
+    fontSize: 40,
     fontWeight: "700",
   },
+
   brandCaption: {
     marginTop: 6,
-    color: "rgba(255, 255, 255, 0.8)",
-    fontSize: 14,
+    color: "white",
+    fontSize: 20,
   },
-  panel: {
-    minHeight: 340,
-    paddingTop: 42,
-    paddingHorizontal: 28,
-    borderTopLeftRadius: 36,
-    borderTopRightRadius: 36,
-    backgroundColor: "#FFFFFF",
-  },
-  title: {
-    color: "#102A43",
-    fontSize: 28,
-    fontWeight: "700",
-    textAlign: "center",
-  },
-  description: {
-    marginTop: 12,
-    color: "#627D98",
-    fontSize: 16,
-    lineHeight: 24,
-    textAlign: "center",
-  },
+
   actions: {
-    marginTop: 36,
+    marginTop: 32,
     gap: 14,
+    backgroundColor: "transparent",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    height: "100%",
   },
-  primaryButton: {
+
+  buttonStyle: {
+    width: 300,
     height: 54,
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 16,
-    backgroundColor: "#1689D8",
+    backgroundColor: "white",
+    display: "flex",
   },
-  primaryButtonText: {
-    color: "#FFFFFF",
-    fontSize: 16,
-    fontWeight: "700",
-  },
-  secondaryButton: {
-    height: 54,
-    alignItems: "center",
-    justifyContent: "center",
-    borderWidth: 1.5,
-    borderColor: "#1689D8",
-    borderRadius: 16,
-    backgroundColor: "#FFFFFF",
-  },
-  secondaryButtonText: {
+
+  buttonText: {
     color: "#1689D8",
-    fontSize: 16,
+    fontSize: 21,
     fontWeight: "700",
+    textAlign: "center",
   },
+
   buttonPressed: {
     opacity: 0.75,
   },
