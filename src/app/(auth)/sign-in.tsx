@@ -1,4 +1,3 @@
-import { ThemedView } from "@/components/themed-view";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useState } from "react";
@@ -11,89 +10,115 @@ import {
   View,
 } from "react-native";
 
-export default function SignIn() {
-  const passwd = useState<string | null>(null);
-  const email = useState<string | null>(null);
+import { ThemedView } from "@/components/themed-view";
 
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+function isValidEmail(value: string): boolean {
+  return EMAIL_PATTERN.test(value.trim());
+}
+
+export default function SignIn() {
   const router = useRouter();
 
-  const [sending, setSending] = useState<boolean>(false);
-
-  function showAlert() {
-    Alert.alert("Aviso", "Por favor, verifique suas credenciais.", [
-      { text: "OK", onPress: () => setSending(false) },
-    ]);
-    setInterval(() => {
-      setSending(false);
-    }, 2000);
-  }
-
-  function verifyEmail() {
-    const emailValue = email[0];
-    if (emailValue && emailValue.includes("@")) {
-      return true;
-    }
-    return false;
-  }
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [sending, setSending] = useState(false);
 
   function handleBackPress() {
     if (router.canGoBack()) {
       router.back();
-    } else {
-      router.replace("/");
+      return;
     }
+
+    router.replace("/");
+  }
+
+  function showCredentialsAlert() {
+    Alert.alert(
+      "Aviso",
+      "Por favor, verifique suas credenciais.",
+      [
+        {
+          text: "OK",
+          onPress: () => setSending(false),
+        },
+      ],
+      {
+        cancelable: false,
+      },
+    );
+  }
+
+  function handleSubmit() {
+    setSending(true);
+
+    const hasValidEmail = isValidEmail(email);
+    const hasValidPassword = password.trim().length > 0;
+
+    if (!hasValidEmail || !hasValidPassword) {
+      showCredentialsAlert();
+      return;
+    }
+
+    // TODO: substituir pela chamada da API de autenticação.
+    showCredentialsAlert();
   }
 
   return (
     <ThemedView style={styles.container}>
-      <View
-        style={{
-          justifyContent: "flex-start",
-          width: "100%",
-          marginTop: 80,
-          marginLeft: 40,
-        }}
+      <TouchableOpacity
+        accessibilityLabel='Voltar para a tela inicial'
+        accessibilityRole='button'
+        onPress={handleBackPress}
+        style={styles.backButton}
       >
-        <TouchableOpacity onPress={handleBackPress} style={styles.backButton}>
-          <Ionicons name='arrow-back' size={24} color='white' />
-        </TouchableOpacity>
-      </View>
+        <Ionicons name='arrow-back' size={24} color='#FFFFFF' />
+      </TouchableOpacity>
 
       <View style={styles.header}>
-        <View
-          style={{ alignItems: "center", justifyContent: "center", gap: 10 }}
-        >
-          <Text style={{ color: "black", fontSize: 24, fontWeight: "bold" }}>
-            Bem-vindo de volta!
-          </Text>
-          <Text style={{ color: "black", fontSize: 16 }}>
-            Por favor, informe com suas credenciais.
+        <View style={styles.headerContent}>
+          <Text style={styles.title}>Bem-vindo de volta!</Text>
+
+          <Text style={styles.subtitle}>
+            Por favor, informe suas credenciais.
           </Text>
         </View>
       </View>
+
       <ThemedView style={styles.inputContainer}>
         <TextInput
-          style={styles.input}
+          autoCapitalize='none'
+          autoCorrect={false}
+          keyboardType='email-address'
+          onChangeText={setEmail}
           placeholder='Email'
-          onChangeText={(text) => email[1](text)}
-        />
-        <TextInput
+          placeholderTextColor='#8193A5'
           style={styles.input}
+          value={email}
+        />
+
+        <TextInput
+          autoCapitalize='none'
+          autoCorrect={false}
+          onChangeText={setPassword}
           placeholder='Password'
-          onChangeText={(text) => passwd[1](text)}
-          secureTextEntry={true}
+          placeholderTextColor='#8193A5'
+          secureTextEntry
+          style={styles.input}
+          value={password}
         />
       </ThemedView>
 
       <View style={styles.buttonContainer}>
         <TouchableOpacity
+          accessibilityLabel='Entrar'
+          accessibilityRole='button'
+          disabled={sending}
+          onPress={handleSubmit}
           style={styles.button}
-          onPress={() => {
-            setSending(true);
-            showAlert();
-          }}
         >
-          <Text style={{ color: "white", fontSize: 16, fontWeight: "bold" }}>
+          <Text style={styles.buttonText}>
             {sending ? "Enviando..." : "Entrar"}
           </Text>
         </TouchableOpacity>
@@ -105,63 +130,88 @@ export default function SignIn() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "flex-start",
     alignItems: "center",
-    padding: 0,
-    margin: 0,
-    backgroundColor: "white",
+    backgroundColor: "#FFFFFF",
   },
+
+  backButton: {
+    position: "absolute",
+    top: 80,
+    left: 40,
+    zIndex: 1,
+    width: 50,
+    height: 50,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 25,
+    backgroundColor: "#16A085",
+  },
+
   header: {
-    backgroundColor: "white",
     width: "100%",
     height: "30%",
-    paddingTop: 50,
-    display: "flex",
-    justifyContent: "center",
     alignItems: "center",
+    justifyContent: "center",
+    paddingTop: 50,
+    backgroundColor: "#FFFFFF",
   },
+
+  headerContent: {
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 10,
+  },
+
+  title: {
+    color: "#000000",
+    fontSize: 24,
+    fontWeight: "700",
+  },
+
+  subtitle: {
+    color: "#000000",
+    fontSize: 16,
+  },
+
+  inputContainer: {
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 30,
+    paddingTop: 30,
+  },
+
   input: {
     width: "80%",
     height: 50,
-    borderColor: "#ADD8E6",
-    borderWidth: 1,
-    borderRadius: 15,
-    paddingHorizontal: 10,
     marginBottom: 20,
+    paddingHorizontal: 10,
+    borderWidth: 1,
+    borderColor: "#ADD8E6",
+    borderRadius: 15,
     backgroundColor: "#FFFFFF",
+    color: "#000000",
   },
-  inputContainer: {
-    display: "flex",
-    paddingTop: 30,
-    justifyContent: "center",
-    alignItems: "center",
-    flexDirection: "column",
-    width: "100%",
-    gap: 30,
-  },
+
   buttonContainer: {
-    display: "flex",
     width: "100%",
-    justifyContent: "center",
     alignItems: "center",
-    flexDirection: "column",
-    gap: 20,
+    justifyContent: "center",
   },
+
   button: {
     width: "80%",
     height: 50,
-    backgroundColor: "#16A085",
-    borderRadius: 15,
+    alignItems: "center",
+    justifyContent: "center",
     marginTop: 20,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  backButton: {
+    borderRadius: 15,
     backgroundColor: "#16A085",
-    width: 50,
-    height: 50,
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 99,
+  },
+
+  buttonText: {
+    color: "#FFFFFF",
+    fontSize: 16,
+    fontWeight: "700",
   },
 });
